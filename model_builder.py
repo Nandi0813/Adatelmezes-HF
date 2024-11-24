@@ -2,19 +2,15 @@ from tensorflow.keras import layers, models
 
 def build_conv_pool_model(input_size, length):
     model = models.Sequential()
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_size, padding="same"))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_size, padding="valid"))
     model.add(layers.BatchNormalization())
     model.add(layers.MaxPooling2D((2, 2)))
 
-    model.add(layers.Conv2D(64, (3, 3), activation='relu', padding="same"))
+    model.add(layers.Conv2D(64, (2, 2), activation='relu', padding="valid"))
     model.add(layers.BatchNormalization())
     model.add(layers.MaxPooling2D((2, 2)))
 
-    model.add(layers.Conv2D(64, (3, 3), activation='relu', padding="same"))
-    model.add(layers.BatchNormalization())
-    model.add(layers.MaxPooling2D((2, 2)))
-
-    model.add(layers.Conv2D(128, (3, 3), activation='relu', padding="same"))
+    model.add(layers.Conv2D(128, (2, 2), activation='relu', padding="valid"))
     model.add(layers.BatchNormalization())
     model.add(layers.MaxPooling2D((2, 2)))
 
