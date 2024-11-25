@@ -70,12 +70,11 @@ def process_image_data_with_edges(base_path, image_size, targets=None):
                     img_path = os.path.join(folder_path, filename)
                     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                     if img is not None:
-                        # Resize image
                         img_resized = cv2.resize(img, image_size)
-                        # Edge detection
-                        edges = cv2.Laplacian(img_resized, cv2.CV_64F)
-                        edges = cv2.convertScaleAbs(edges)  # Convert to 8-bit
-                        img_flattened = edges.flatten() / 255.0
+                        img_blurred = cv2.GaussianBlur(img_resized, (3, 3), 0)
+                        img_enhanced = cv2.equalizeHist(img_blurred)
+
+                        img_flattened = img_enhanced.flatten() / 255.0
                         data.append({'target': target, 'pixels': img_flattened})
     else:
         for filename in os.listdir(base_path):
@@ -83,13 +82,12 @@ def process_image_data_with_edges(base_path, image_size, targets=None):
             if os.path.isfile(img_path) and filename.endswith(".png"):
                 img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 if img is not None:
-                    # Resize image
                     img_resized = cv2.resize(img, image_size)
-                    # Edge detection
-                    edges = cv2.Laplacian(img_resized, cv2.CV_64F)
-                    edges = cv2.convertScaleAbs(edges)  # Convert to 8-bit
-                    img_flattened = edges.flatten() / 255.0
-                    data.append({'label': filename, 'pixels': img_flattened})
+                    img_blurred = cv2.GaussianBlur(img_resized, (3, 3), 0)
+                    img_enhanced = cv2.equalizeHist(img_blurred)
+
+                    img_flattened = img_enhanced.flatten() / 255.0
+                    data.append({'target': filename, 'pixels': img_flattened})
 
     df = pd.DataFrame(data)
     pixel_columns = [f'pixel_{i}' for i in range(image_size[0] * image_size[1])]
